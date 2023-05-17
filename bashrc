@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-#  bashrc v. 20230517.1
+#  bashrc v. 20230517.2
 #  Run control file for interactive bash shells, sourced by .bash_profile
 #-----------------------------------------------------------------------------
 
@@ -64,4 +64,14 @@ fi
 #-----------------------------------------------------------------------------
 # Defined in funcs.d/psfuncs.sh; executed each time before main prompt printed
 PROMPT_COMMAND=refresh_prompts
+
+
+#-----------------------------------------------------------------------------
+# ->  bash_post, if present, will not be overwritten by repo updates so can be
+#     used for host-specific configuration
+#-----------------------------------------------------------------------------
+if [[ -r "$BASH_CFG_D/bash_post" ]]; then
+  source "$BASH_CFG_D/bash_post" &>/dev/null
+fi
+
 
