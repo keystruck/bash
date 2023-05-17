@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-#  bashrc v. 20230507.1
+#  bashrc v. 20230517.1
 #  Run control file for interactive bash shells, sourced by .bash_profile
 #-----------------------------------------------------------------------------
 
@@ -10,7 +10,7 @@ case $- in
 esac
 
 # Not visible to non-login shells if defined in bash_profile, so define here
-export BASH_CFG_D="$HOME/.config/bash-config"
+export BASH_CFG_D="$HOME/.config/bash"
 
 # Used in prompt customization. No need to export; this file is sourced by all
 # interactive shells.
