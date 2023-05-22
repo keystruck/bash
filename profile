@@ -42,6 +42,15 @@ fi
 
 
 #-----------------------------------------------------------------------------
+# ->  XDG variables
+#     https://www.baeldung.com/linux/posix-shell-array
+#----------------------------------------------------------------------------
+export XDG_CONFIG_HOME="$HOME"/.config
+export XDG_DATA_HOME="$HOME"/.local/share
+export XDG_CACHE_HOME="$HOME"/.cache
+
+
+#-----------------------------------------------------------------------------
 # ->  Prepend personal directories to PATH
 #     Note POSIX array syntax - set positional parameters
 #     https://www.baeldung.com/linux/posix-shell-array
