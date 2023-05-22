@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-#  psfuncs v. 20230518.1
+#  psfuncs v. 20230522.1
 #  Defines fancy, colored PS1, PS2 ..., and related functions
 #  Function synopsis:
 #  - colp [off|false|no]: turns color prompt on/off
@@ -10,7 +10,7 @@
 
 # Turn color on/off
 # colp off|false|no turns color off; anything else turns it on
-function colp {
+function pcolor {
   case "$TERM" in
     xterm-color|*-256color) ;;
                          *) unset color_prompt    # color not supported
@@ -25,25 +25,35 @@ function colp {
   fi
 }
 
+alias pcol='pcolor'
+alias pmon='pcolor off'
+
 
 # Simplify prompt to single line
 # simplep off|false|no restores full detail.
-function simp {
+function pmultiple {
   if (shopt -s nocasematch; [[ $1 =~ ^(off|false|no) ]]); then
-    multiline_prompt=true
-  else
     unset multiline_prompt
+  else
+    multiline_prompt=true
   fi
 }
 
+alias pmult='pmultiple'
+alias psimp='pmultiple off'
+
+
 # Turn color and detail on/off together
-function fanp {
+function pfancy {
   if (shopt -s nocasematch; [[ $1 =~ ^(off|false|no) ]]); then
     unset multiline_prompt && unset color_prompt
   else
     multiline_prompt=true && color_prompt=true
   fi
 }
+
+alias pfan='pfancy'
+alias pplain='pfancy off'
 
 
 # Display all 256 colors
@@ -61,53 +71,36 @@ function refresh_prompts {
 	# '##0' strips all leading zeros, leaving non-zero exit code or null string
 	local xc=${?##0}
 
-  # Color foreground values
-  local red='\[\e[38;5;196m\]'
-  local yellow='\[\e[38;5;184m\]'
-  local gold='\[\e[38;5;222m\]'
-  local beige='\[\e[38;5;229m\]'
-  local orange='\[\e[38;5;208m\]'
-  local earth='\[\e[38;5;137m\]'
-  local forest='\[\e[38;5;107m\]'
-  local pale_green='\[\e[38;5;149m\]'
-  local olive='\[\e[38;5;101m\]'
-  local turquoise='\[\e[38;5;37m\]'
-  local sky='\[\e[38;5;117m\]'
-  local blue='\[\e[38;5;111m\]'
-  local pink='\[\e[38;5;183m\]'
+  # Clear all prompt variable coloring
+  local reset='\[\e[0m\]'
+  PS1="${reset}"
+  PS2="${reset}"
+  PS3="${reset}"
+  PS4="${reset}"
 
-  # Monochrome foreground values
+  if [[ -n $color_prompt ]]; then
+    # Color foreground values
+    # If color_prompt not set these are empty
+    local red='\[\e[38;5;196m\]'
+    local yellow='\[\e[38;5;184m\]'
+    local gold='\[\e[38;5;222m\]'
+    local beige='\[\e[38;5;229m\]'
+    local orange='\[\e[38;5;208m\]'
+    local earth='\[\e[38;5;137m\]'
+    local forest='\[\e[38;5;107m\]'
+    local pale_green='\[\e[38;5;149m\]'
+    local olive='\[\e[38;5;101m\]'
+    local turquoise='\[\e[38;5;37m\]'
+    local sky='\[\e[38;5;117m\]'
+    local blue='\[\e[38;5;111m\]'
+    local pink='\[\e[38;5;183m\]'
+  fi
+
+  # Monochrome foreground values - not dependent on color_prompt
   local dark='\[\e[38;5;243m\]'
   local grey='\[\e[38;5;247m\]'
   local silver='\[\e[38;5;251m\]'
   local white='\[\e[38;5;231m\]'
-
-  local reset='\[\e[0m\]'
-
-  # Colorize if color_prompt set to nonempty value
-  if [[ -n $color_prompt ]]; then
-    local c_err=$red
-    local c_info=$pink
-    local c_box=$earth
-    local c_right=$c_box
-    local c_user=$gold
-    local c_host=$forest
-    local c_cwd=$blue
-    local c_shlvl=$orange
-    local c_hist=$c_box
-    local c_dollar=$c_cwd
-  else
-    local c_err=$white
-    local c_info=$silver
-    local c_box=$dark
-    local c_right=$c_box
-    local c_user=$silver
-    local c_host=$grey
-    local c_cwd=$dark
-    local c_shlvl=$dark
-    local c_hist=$dark
-    local c_dollar=$dark
-  fi
 
   # Fancify if multiline_prompt set to nonempty value
   if [[ -n $multiline_prompt ]]; then
@@ -116,40 +109,57 @@ function refresh_prompts {
     # \r = carriage return without line feed
     # ${...@P} = expand variable as if a prompt escape, here a strftime string
     local rt_prompt="\D{%H:%M %a %b %e}"
-    printf -v PS1 "${c_right}%${COLUMNS}s\r" "${rt_prompt@P}"
+    printf -v PS1 "${earth}%${COLUMNS}s\r" "${rt_prompt@P}"
 
     # First line: error flag, SSH warning, user, hostname and cwd
-    PS1+="${c_left}┌─"
-    PS1+="${xc:+${c_err}$xc! }"   # prev exit code, if !=0
-    PS1+="${c_user}\u "            # user
+    PS1+="${earth}┌─"
+    PS1+="${xc:+${red}$xc! }"   # prev exit code, if !=0
     if [[ -n "$SSH_CLIENT" ]]; then
       # PS1+="${c_info}\u "
-      PS1+="${c_host}(\h) "					# hostname
+      PS1+="${pink}\h* "					# hostname
     else
-      PS1+="${c_host}\h "
+      PS1+="${gold}\h "
     fi
-    PS1+="${c_cwd}\w"					# current directory
+    PS1+="${forest}\u "           # user
+    PS1+="${blue}\w "    				# current directory
     PS1+="\n"
 
     # Second line: shell level and history number
-    PS1+="${c_box}└─"
+    PS1+="${earth}└─"
     # PS1+="${earth}\s \v"				# shell version
-    (( SHLVL > 1 )) && PS1+="${c_shlvl}$SHLVL:"
-    PS1+="${c_hist}\!"
-    PS1+="${c_box} \$ "
-    PS1+="${reset}"
+    (( SHLVL > 1 )) && PS1+="${orange}$SHLVL:"
+    PS1+="${earth}\! "
+    PS1+="${earth}» "
     
-  else    # simple (single-line) prompt
+    PS2="${earth}... "          # continuation
+    PS3="${earth}#? "           # selection
+    PS4="${earth}+${LINENO}: "  # trace
+
+  # single-line prompt
+  else
+    local rt_prompt="\D{%H:%M}"
+    printf -v PS1 "${earth}%${COLUMNS}s\r" "${rt_prompt@P}"
+    PS1+="${xc:+${red}$xc! }"   # prev exit code, if !=0
+    (( SHLVL > 1 )) && PS1+="${earth}[$SHLVL] "
     if [[ -n "$SSH_CLIENT" ]]; then
-      # PS1+="${c_info}\u "
-      PS1="${c_info}(\u@\h) "					# hostname
+      PS1+="${pink}\h* "					# hostname
     else
-      PS1="${c_host}\h "
+      PS1+="${gold}\h "
     fi
-    PS1+="${c_cwd}\w ${c_dollar}\$ ${reset}"
-    PS2="${c_cwd}... ${reset}"          # continuation
-    PS3="${c_cwd}#? ${reset}"           # selection
-    PS3="${c_cwd}+${LINENO}: "${reset}  # trace
+    # [[ -n "$SSH_CLIENT" ]] && PS1+="${gold}\h* "
+    PS1+="${forest}\u "
+    PS1+="${blue}\w "
+    PS1+="${blue}» "
+    
+    PS2="${blue}... "          # continuation
+    PS3="${blue}#? "           # selection
+    PS4="${blue}+${LINENO}: "  # trace
   fi
+
+  # Reset for user input
+  PS1+="${reset}"
+  PS2+="${reset}"
+  PS3+="${reset}"
+  PS4+="${reset}"
 }
 
