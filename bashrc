@@ -67,11 +67,11 @@ PROMPT_COMMAND=refresh_prompts
 
 
 #-----------------------------------------------------------------------------
-# ->  bash_post, if present, will not be overwritten by repo updates so can be
+# ->  bash_host, if present, will not be overwritten by repo updates so can be
 #     used for host-specific configuration
 #-----------------------------------------------------------------------------
-if [[ -r "$BASH_CFG_D/bash_post" ]]; then
-  source "$BASH_CFG_D/bash_post" &>/dev/null
+if [[ -r "$BASH_CFG_D/bash_host" ]]; then
+  source "$BASH_CFG_D/bash_host" &>/dev/null
 fi
 
 

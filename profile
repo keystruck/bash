@@ -51,19 +51,6 @@ export XDG_CACHE_HOME="$HOME"/.cache
 
 
 #-----------------------------------------------------------------------------
-# ->  Prepend personal directories to PATH
-#     Note POSIX array syntax - set positional parameters
-#     https://www.baeldung.com/linux/posix-shell-array
-#-----------------------------------------------------------------------------
-set -- "$HOME/.local/bin" "$HOME/bin"
-for dir in "$@" ; do
-  [ -d "$dir" ] || continue                             # not a dir
-  echo $PATH | grep -Eq "(^|:)${dir}(:|$)" && continue  # already in PATH
-  export PATH="${dir}${PATH+:$PATH}"
-done
-
-
-#-----------------------------------------------------------------------------
 # ->  Homebrew/Linuxbrew
 #-----------------------------------------------------------------------------
 # Use POSIX echo | grep -q instead of bash =~
@@ -91,4 +78,29 @@ echo $MANPATH | grep -Eq "(^|:)${HOMEBREW_PREFIX}/share/man(:|$)"   \
   || export MANPATH="$HOMEBREW_PREFIX/share/man${MANPATH+:$MANPATH}"
 echo $INFOPATH | grep -Eq "(^|:)${HOMEBREW_PREFIX}/share/info(:|$)" \
   || export INFOPATH="$HOMEBREW_PREFIX/share/info${INFOPATH:-}"
+
+
+#-----------------------------------------------------------------------------
+# ->  Prepend Rust binary directory to PATH
+#-----------------------------------------------------------------------------
+set -- "$HOME/.cargo/bin"
+for dir in "$@" ; do
+  [ -d "$dir" ] || continue                             # not a dir
+  echo $PATH | grep -Eq "(^|:)${dir}(:|$)" && continue  # already in PATH
+  export PATH="${dir}${PATH+:$PATH}"
+done
+
+
+#-----------------------------------------------------------------------------
+# ->  Prepend personal directories to PATH
+#     Note POSIX array syntax - set positional parameters
+#     https://www.baeldung.com/linux/posix-shell-array
+#-----------------------------------------------------------------------------
+set -- "$HOME/.local/bin" "$HOME/bin"
+for dir in "$@" ; do
+  [ -d "$dir" ] || continue                             # not a dir
+  echo $PATH | grep -Eq "(^|:)${dir}(:|$)" && continue  # already in PATH
+  export PATH="${dir}${PATH+:$PATH}"
+done
+
 
