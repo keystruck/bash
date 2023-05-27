@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-#  bashrc v. 20230522.1
+#  bashrc v. 20230527.1
 #  Run control file for interactive bash shells, sourced by .bash_profile
 #-----------------------------------------------------------------------------
 
@@ -15,7 +15,7 @@ export BASH_CFG_D="$HOME/.config/bash"
 # Used in prompt customization. No need to export; this file is sourced by all
 # interactive shells.
 color_prompt=true
-multiline_prompt=false
+unset multiline_prompt
 
 
 #-----------------------------------------------------------------------------
