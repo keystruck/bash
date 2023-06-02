@@ -1,13 +1,17 @@
 #-----------------------------------------------------------------------------
-#  bashrc v. 20230527.1
+#  bashrc v. 20230602.1
 #  Run control file for interactive bash shells, sourced by .bash_profile
 #-----------------------------------------------------------------------------
-
 # Bail here if not running interactively
 case $- in
   *i*) ;;
     *) return;;
 esac
+
+# ~/.profile sets several PATH variables. If $OS is empty it hasn't been sourced.
+if [[ -z "$OS" ]]; then
+    [[ -r "~/.profile" ]] && source "~/.profile"
+fi
 
 # Not visible to non-login shells if defined in bash_profile, so define here
 export BASH_CFG_D="$HOME/.config/bash"
