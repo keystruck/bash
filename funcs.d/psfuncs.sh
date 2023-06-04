@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-#  psfuncs v. 20230522.1
+#  psfuncs v. 20230604.1
 #  Defines fancy, colored PS1, PS2 ..., and related functions
 #  Function synopsis:
 #  - colp [off|false|no]: turns color prompt on/off
@@ -128,7 +128,7 @@ function refresh_prompts {
     PS1+="${earth}└─"
     # PS1+="${earth}\s \v"				# shell version
     (( SHLVL > 1 )) && PS1+="${orange}$SHLVL:"
-    PS1+="${earth}\! "
+    PS1+="${earth}\!"
     PS1+="${earth}» "
     
     PS2="${earth}... "          # continuation
@@ -148,7 +148,7 @@ function refresh_prompts {
     fi
     # [[ -n "$SSH_CLIENT" ]] && PS1+="${gold}\h* "
     PS1+="${forest}\u "
-    PS1+="${blue}\w "
+    PS1+="${blue}\w"
     PS1+="${blue}» "
     
     PS2="${blue}... "          # continuation

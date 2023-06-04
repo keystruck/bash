@@ -10,7 +10,7 @@ esac
 
 # ~/.profile sets several PATH variables. If $OS is empty it hasn't been sourced.
 if [[ -z "$OS" ]]; then
-    [[ -r "~/.profile" ]] && source "~/.profile"
+    [[ -r "$HOME/.profile" ]] && source "$HOME/.profile"
 fi
 
 # Not visible to non-login shells if defined in bash_profile, so define here
