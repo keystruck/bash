@@ -1,0 +1,28 @@
+#-----------------------------------------------------------------------------
+#  .profile v. 20230623.1
+#  General config file for interactive POSIX shells
+#  Sourced by shells other than bash so must be strictly POSIX-compliant.
+#-----------------------------------------------------------------------------
+
+# pathnames
+shell_cfg_d="$HOME/.config/shell"
+posix_common_d="$shell_cfg_d/posix/common.d"
+posix_env="$posix_common_d/_env.sh"
+
+
+if [ -n "$BASH_VERSION" ]; then
+    # Source .bashrc if running bash
+    # bashrc independently sources posix/common.d/*
+    bashrc="$shell_cfg_d/bash/bashrc"
+    [ -r "$bashrc" ] && source "$bashrc" &>/dev/null
+else
+    # Non-bash POSIX
+    # _env.sh first to set up environment, then rest
+    [ -r "$posix_env" ] && source "$posix_env" &>/dev/null
+    for file in "$posix_common_d/[^^_]*"; do
+        [ -r "$file" ] && source "$file" &>/dev/null
+    done
+fi
+
+unset shell_cfg_d posix_common_d bashrc posix_env
+

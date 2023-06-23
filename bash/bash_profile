@@ -1,0 +1,10 @@
+#-----------------------------------------------------------------------------
+#  bash_profile v. 20230623.1
+#  Settings for interactive login bash shells
+#  Does nothing but source .bashrc
+#-----------------------------------------------------------------------------
+bashrc="$HOME/.bashrc"
+[[ -r "$bashrc" ]] && source "$bashrc" &>/dev/null
+unset bashrc
+
+# do not source .profile: results in loop

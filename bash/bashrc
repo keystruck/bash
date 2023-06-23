@@ -1,0 +1,71 @@
+#-----------------------------------------------------------------------------
+#  bashrc v.20230623.1
+#  rc file for interactive bash shells
+#  sourced by .profile or .bash_profile
+#-----------------------------------------------------------------------------
+# Bail here if not running interactively
+case $- in
+  *i*) ;;
+    *) return;;
+esac
+
+
+#-----------------------------------------------------------------------------
+# ->  bash shell options
+#     POSIX options separately set in posix/common.d/settings.sh
+#-----------------------------------------------------------------------------
+shopt	-s autocd       # infer 'cd' from plain directory name
+shopt	-s checkwinsize # update LINES and COLUMNS after each command
+shopt	-s extglob      # enable *() +() ?() @() !() glob patterns
+
+
+#-----------------------------------------------------------------------------
+# -> Path variables
+#-----------------------------------------------------------------------------
+shell_cfg_d="$HOME/.config/shell"
+bash_cfg_d="$shell_cfg_d/bash"
+posix_common_d="$shell_cfg_d/posix/common.d"
+posix_env="$posix_common_d/_env.sh"
+
+
+#-----------------------------------------------------------------------------
+# ->  Source environment from posix/common.d/*
+#     Prefix filenames with _ to source manually, ^ to exclude
+#-----------------------------------------------------------------------------
+# Start with _env.sh to set up environment, then rest
+[[ -r "$posix_env" ]] && source "$posix_env" &>/dev/null
+for file in "$posix_common_d"/[^^_]*; do
+	[[ -r "$file" ]] && source "$file" &>/dev/null
+done
+
+
+#-----------------------------------------------------------------------------
+# ->  User-defined functions
+#     Prefix filenames with _ to source manually, ^ to exclude
+#-----------------------------------------------------------------------------
+for file in "$bash_cfg_d/funcs.d"/[^^_]*; do
+	[[ -r "$file" ]] && source "$file" &>/dev/null
+done
+
+
+#-----------------------------------------------------------------------------
+# ->  Source aliases from external file
+#-----------------------------------------------------------------------------
+aliases="$bash_cfg_d/bash_aliases"
+[[ -r "$aliases" ]] && source "$aliases" &>/dev/null
+unset aliases
+
+
+#-----------------------------------------------------------------------------
+# ->  Prompt customization
+#-----------------------------------------------------------------------------
+# Prompt variable customization
+color_prompt=true
+unset multiline_prompt
+
+# Defined in funcs.d/psfuncs.fn; executed each time before main prompt printed
+PROMPT_COMMAND=refresh_prompts
+
+
+unset shell_cfg_d bash_cfg_d posix_common_d posix_env
+
